@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 import os
 import sys
 import logging
@@ -32,11 +34,9 @@ def openai_response(message):
     global messages
     messages.append({"role": "user", "content": message})
     try:
-        chat = openai.ChatCompletion.create(
-            model=model_in_use,
-            messages=messages
-        )
-        reply = chat['choices'][0]['message']['content']
+        chat = client.chat.completions.create(model=model_in_use,
+        messages=messages)
+        reply = chat.choices[0].message.content
         print(Fore.CYAN + Style.BRIGHT + Back.BLACK + "Assistant: >>> " + Style.RESET_ALL, reply)
         messages.append({"role": "assistant", "content": reply})
     except Exception as e:
@@ -68,7 +68,7 @@ def change_model(command):
     try:
         new_model = command.split()[1]
         # Check if the new model is valid (optional enhancement)
-        list_of_models = [model['id'] for model in openai.Model.list()['data']]
+        list_of_models = [model['id'] for model in client.models.list()['data']]
         if new_model in list_of_models:
             model_in_use = new_model
             print(f"Model successfully changed to: {model_in_use}")
@@ -80,9 +80,9 @@ def change_model(command):
 def list_models():
     """List available OpenAI models."""
     try:
-        models = openai.Model.list()
+        models = client.models.list()
         print(f"Current OpenAI model: {model_in_use}")
-        for model in models['data']:
+        for model in models.data:
             print(model['id'])
     except Exception as e:
         logging.error(f"Error listing models: {e}")
