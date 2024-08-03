@@ -68,7 +68,7 @@ def change_model(command):
     try:
         new_model = command.split()[1]
         # Check if the new model is valid (optional enhancement)
-        list_of_models = [model['id'] for model in client.models.list()['data']]
+        list_of_models = [model.id for model in list(client.models.list().data)]
         if new_model in list_of_models:
             model_in_use = new_model
             print(f"Model successfully changed to: {model_in_use}")
