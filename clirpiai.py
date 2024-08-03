@@ -1,51 +1,55 @@
 #!/usr/bin/env python3
-from openai import OpenAI
 
-client = OpenAI()
 import os
 import sys
 import logging
-from colorama import Fore, Back, Style
 from dotenv import load_dotenv
+from colorama import Fore, Back, Style
+from openai import OpenAI
 
-load_dotenv()  # Load environment variables from .env file
+# Load environment variables from .env file
+load_dotenv()
+
+# Ensure that the OpenAI API key is set before creating an OpenAI client
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    logging.error("OpenAI API key is not set. Please set it in environment variables.")
+    sys.exit(1)
+
+# Initialize OpenAI client and set the API key
+client = OpenAI()
 
 # Initialize logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Models
-model_in_use = "gpt-3.5-turbo"
+model_in_use = 'gpt-3.5-turbo'
 
 # Initialize message history
-messages = [{"role": "system", "content": "You are a helpful assistant"}]
+messages = [{'role': 'system', 'content': 'You are a helpful assistant'}]
 
 def clear_screen():
     """Clear the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def check_api_key():
-    """Check if the OpenAI API key is set."""
-    if not os.getenv('OPENAI_API_KEY'):
-        logging.error("OpenAI API key is not set. Please set it in environment variables.")
-        sys.exit(1)
-
-def openai_response(message):
+def get_openai_response(message):
     """Get a response from OpenAI."""
     global messages
-    messages.append({"role": "user", "content": message})
+    messages.append({'role': 'user', 'content': message})
     try:
-        chat = client.chat.completions.create(model=model_in_use,
-        messages=messages)
+        chat = client.chat.completions.create(model=model_in_use, messages=messages)
         reply = chat.choices[0].message.content
         print(Fore.CYAN + Style.BRIGHT + Back.BLACK + "Assistant: >>> " + Style.RESET_ALL, reply)
-        messages.append({"role": "assistant", "content": reply})
+        messages.append({'role': 'assistant', 'content': reply})
     except Exception as e:
         logging.error(f"Error getting response from OpenAI: {e}")
 
 def interactive_mode():
     """Run the interactive mode."""
     clear_screen()
-    print(Style.BRIGHT + Back.RED + Fore.WHITE + "Interactive Assistant Mode. Type 'exit' to quit or 'help' for commands." + Style.RESET_ALL)
+    print(Style.BRIGHT + Back.RED + Fore.WHITE +
+          "Interactive Assistant Mode. Type 'exit' to quit or 'help' for commands." +
+          Style.RESET_ALL)
     print(Style.BRIGHT + Fore.GREEN + f"Model in use: {model_in_use}" + Style.RESET_ALL)
 
     while True:
@@ -60,14 +64,14 @@ def interactive_mode():
         elif message.lower() == 'help':
             print_help()
         else:
-            openai_response(message)
+            get_openai_response(message)
 
 def change_model(command):
     """Change the current OpenAI model."""
     global model_in_use
     try:
         new_model = command.split()[1]
-        # Check if the new model is valid (optional enhancement)
+        # Validate the new model
         list_of_models = [model.id for model in list(client.models.list().data)]
         if new_model in list_of_models:
             model_in_use = new_model
@@ -99,12 +103,10 @@ def read_from_stdin():
     print("Reading input from standard input. Press Ctrl+D (or Ctrl+Z on Windows) to end input.")
     input_data = sys.stdin.read().strip()
     if input_data:
-        openai_response(input_data)
+        get_openai_response(input_data)
 
 def main():
     """Main function to run the script."""
-    check_api_key()
-
     if len(sys.argv) < 2:
         print("Error: Please provide at least one parameter. Use '-h' to see the usage.")
         sys.exit(1)
@@ -112,7 +114,6 @@ def main():
     mode = sys.argv[1]
     global model_in_use
 
-    # Handle optional model argument
     if len(sys.argv) > 3 and sys.argv[2] == '--model':
         model_in_use = sys.argv[3]
         args_start_index = 4
@@ -123,7 +124,7 @@ def main():
         interactive_mode()
     elif mode == "-t" and len(sys.argv) > args_start_index:
         message = ' '.join(sys.argv[args_start_index:])
-        openai_response(message)
+        get_openai_response(message)
     elif mode == "-s":
         read_from_stdin()
     elif mode == "-h":
