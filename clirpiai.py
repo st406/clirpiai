@@ -83,7 +83,7 @@ def list_models():
         models = client.models.list()
         print(f"Current OpenAI model: {model_in_use}")
         for model in models.data:
-            print(model['id'])
+            print(model.id)
     except Exception as e:
         logging.error(f"Error listing models: {e}")
 
