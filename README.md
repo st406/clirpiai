@@ -1,5 +1,5 @@
 # clirpiai
-This script provides ability to interact with the OpenAI API in various ways using command-line interface on Raspberry PI
+This simple script provides ability to interact with the OpenAI using API in various ways using command-line interface on Raspberry PI
 
  **Install the Required Dependencies:**
 
