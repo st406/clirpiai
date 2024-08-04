@@ -33,7 +33,7 @@ This simple script provides ability to interact with the OpenAI using API in var
 
    - **Read from Standard Input Mode:**
      ```bash
-     echo "what is 1+1" | python clirpiai.py -s
+     echo "Your question or message here" | python clirpiai.py -s
      ```
 
    - **Help:**
