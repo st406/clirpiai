@@ -1,9 +1,9 @@
 # clirpiai
 This simple script provides ability to interact with the OpenAI using API in various ways using command-line interface on Raspberry PI
 
- **Install the Required Dependencies:**
+1. **Install the Required Dependencies:**
 
-1.   Ensure you have the necessary Python libraries installed. You can install them using pip:
+   Ensure you have the necessary Python libraries installed. You can install them using pip:
 
    ```bash
    pip install openai python-dotenv colorama
@@ -40,10 +40,3 @@ This simple script provides ability to interact with the OpenAI using API in var
      ```bash
      python clirpiai.py -h
      ```
-
-4. **Example `.env` File:**
-
-   Here's how your `.env` file should look with a placeholder for your OpenAI API key:
-
-   ```plaintext
-   OPENAI_API_KEY=your_openai_api_key_here
