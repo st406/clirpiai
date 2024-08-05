@@ -46,25 +46,29 @@ def get_openai_response(message):
 
 def interactive_mode():
     """Run the interactive mode."""
-    clear_screen()
-    print(Style.BRIGHT + Back.RED + Fore.WHITE +
-          "Interactive Assistant Mode. Type 'exit' to quit or 'help' for commands." +
-          Style.RESET_ALL)
-    print(Style.BRIGHT + Fore.GREEN + f"Model in use: {model_in_use}" + Style.RESET_ALL)
+    try:
+        clear_screen()
+        print(Style.BRIGHT + Back.RED + Fore.WHITE +
+              "Interactive Assistant Mode. Type 'exit' to quit or 'help' for commands." +
+              Style.RESET_ALL)
+        print(Style.BRIGHT + Fore.GREEN + f"Model in use: {model_in_use}" + Style.RESET_ALL)
 
-    while True:
-        message = input(Style.BRIGHT + Fore.YELLOW + Back.BLACK + "Prompt: >>> " + Style.RESET_ALL).strip()
-        if message.lower() == 'exit':
-            print("Bye!")
-            break
-        elif message.lower().startswith('model'):
-            change_model(message)
-        elif message.lower() == 'list':
-            list_models()
-        elif message.lower() == 'help':
-            print_help()
-        else:
-            get_openai_response(message)
+        while True:
+            message = input(Style.BRIGHT + Fore.YELLOW + Back.BLACK + "Prompt: >>> " + Style.RESET_ALL).strip()
+            if message.lower() == 'exit':
+                print("Bye!")
+                break
+            elif message.lower().startswith('model'):
+                change_model(message)
+            elif message.lower() == 'list':
+                list_models()
+            elif message.lower() == 'help':
+                print_help()
+            else:
+                get_openai_response(message)
+    except KeyboardInterrupt:
+        print("\nProgram terminated by user.")
+        sys.exit(0)
 
 def change_model(command):
     """Change the current OpenAI model."""
